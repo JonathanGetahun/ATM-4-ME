@@ -1,0 +1,19 @@
+{
+  "name": "atm-4-me",
+  "version": "1.0.0",
+  "description": "Finds the nearest atm for the user. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JonathanGetahun/ATM-4-ME.git"
+  },
+  "author": "Jonathan Getahun <kgetahun2@gmail.com> (https://www.jonathangetahun.me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JonathanGetahun/ATM-4-ME/issues"
+  },
+  "homepage": "https://github.com/JonathanGetahun/ATM-4-ME#readme"
+}
