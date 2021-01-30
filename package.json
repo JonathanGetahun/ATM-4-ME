@@ -4,6 +4,7 @@
   "description": "Finds the nearest atm for the user. ",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon run app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/JonathanGetahun/ATM-4-ME/issues"
   },
-  "homepage": "https://github.com/JonathanGetahun/ATM-4-ME#readme"
+  "homepage": "https://github.com/JonathanGetahun/ATM-4-ME#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
 }
