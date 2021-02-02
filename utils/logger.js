@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+//use winston and morgan when adding features
 
 const info = (...params) => {
     if (process.env.NODE_ENV !== 'production') console.log(...params);

@@ -37,7 +37,7 @@ const logger = require('./logger');
 
 
             fs.writeFile(
-                path.join(__dirname, '../DC-atm.json'),
+                path.join(__dirname, '../data/DC-atm.json'),
                 data,
                 {flag: 'w'},
                 (err) => {
