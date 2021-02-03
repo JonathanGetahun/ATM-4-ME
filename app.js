@@ -3,11 +3,14 @@ const app = express();
 require('dotenv').config();
 const morgan = require('morgan');
 const path = require('path');
+const mountRoutes = require('./routes');
 
 
 app.use(express.json());
 app.use(morgan("dev"))
 app.use(express.urlencoded({ extended: false }));
+
+mountRoutes(app);
 
 app.get('/', (req,res) => {
     res.send("Hello")
