@@ -1,129 +1,11 @@
 require('dotenv').config();
 const logger = require('./logger')
 const fs = require('fs');
+const path = require('path');
 
 const { Client } = require('@googlemaps/google-maps-services-js');
+const { on } = require('process');
 
-const test = [
-    {
-      "poiUniqueId": "5dab4b4070d1c00228b7f781",
-      "poiSourceId": "TN74823",
-      "poiName": "PAI",
-      "poiSource": "1999999101",
-      "poiType": "ATM",
-      "poiAddressDetails": {
-        "address": "1600 RHODE ISLAND AVE NW",
-        "city": "WASHINGTON",
-        "state": "DC",
-        "countryCode": "US",
-        "postalCode": "20036",
-        "geoLocationDetails": {
-          "latitude": "38.9066795",
-          "longitude": "-77.0369311",
-          "geoCodeProvider": "USER",
-          "geoCodeAccuracy1": "USER",
-          "geoCodeAccuracy2": "",
-          "geoCodeAccuracy3": "",
-          "geoCodeAccuracy4": ""
-        }
-      },
-      "atmAttributes": {
-        "rtNumber": "1999999101",
-        "restrictedAccess": "N",
-        "wheelchairAccess": " ",
-        "brailleEnabled": " ",
-        "noFee": " ",
-        "chip": " ",
-        "pin": " ",
-        "balanceInquiries": " ",
-        "depositAccepting": " ",
-        "contactless": " ",
-        "multiCurrency": " ",
-        "withdrawlLimit": " ",
-        "mobileTopup": " "
-      },
-      "distance": ".03558"
-    },
-    {
-      "poiUniqueId": "1000400205",
-      "poiSourceId": "LK652071",
-      "poiName": "Courtyard-Dc Embassy Row",
-      "poiSource": "1990004121",
-      "poiType": "ATM",
-      "poiAddressDetails": {
-        "address": "1600 Rhode Island Avenue Nw",
-        "city": "Washington",
-        "state": "DC",
-        "countryCode": "US",
-        "countryName": "UNITED STATES OF AMERICA (THE)",
-        "postalCode": "20036",
-        "geoLocationDetails": {
-          "latitude": "38.906662",
-          "longitude": "-77.036974",
-          "geoCodeProvider": "Google",
-          "geoCodeAccuracy1": "OK",
-          "geoCodeAccuracy2": "ROOFTOP",
-          "geoCodeAccuracy3": "0",
-          "geoCodeAccuracy4": "street_number"
-        }
-      },
-      "atmAttributes": {
-        "rtNumber": "1990004121",
-        "restrictedAccess": "N",
-        "wheelchairAccess": "N",
-        "brailleEnabled": "N",
-        "noFee": "Y",
-        "chip": "N",
-        "pin": "N",
-        "balanceInquiries": " ",
-        "depositAccepting": "N",
-        "contactless": " ",
-        "multiCurrency": " ",
-        "withdrawlLimit": " ",
-        "mobileTopup": " ",
-        "bank": "Courtyard-Dc Embassy Row"
-      },
-      "distance": ".03706"
-    },
-    {
-      "poiUniqueId": "5dab49e970d1c00228b63b45",
-      "poiSourceId": "NH056732",
-      "poiName": "ECLIPSE CASH SYSTEMS  LLC",
-      "poiSource": "1999999101",
-      "poiType": "ATM",
-      "poiAddressDetails": {
-        "address": "17001 RHODE ISLAND AVENUE",
-        "city": "WASHINGTON",
-        "state": "DC",
-        "countryCode": "US",
-        "postalCode": "20036",
-        "geoLocationDetails": {
-          "latitude": "38.9070427",
-          "longitude": "-77.0379273",
-          "geoCodeProvider": "USER",
-          "geoCodeAccuracy1": "USER",
-          "geoCodeAccuracy2": "",
-          "geoCodeAccuracy3": "",
-          "geoCodeAccuracy4": ""
-        }
-      },
-      "atmAttributes": {
-        "rtNumber": "1999999101",
-        "restrictedAccess": "N",
-        "wheelchairAccess": " ",
-        "brailleEnabled": " ",
-        "noFee": " ",
-        "chip": " ",
-        "pin": " ",
-        "balanceInquiries": " ",
-        "depositAccepting": " ",
-        "contactless": " ",
-        "multiCurrency": " ",
-        "withdrawlLimit": " ",
-        "mobileTopup": " "
-      },
-      "distance": ".05774"
-    }]
 
 const client = new Client({});
 
@@ -165,32 +47,45 @@ str += city;
  */
 //Will convert string street adress to lat & long to compare w/ database atm's
 let result = [];
-fs.readFile()
-client.geocode({
-    params:{
-        address:str,
-        key:process.env.GOOGLE_MAPS_API_KEY
-    }
-})
-    .then(res => {
-        let { lat, lng } = res.data.results[0].geometry.location;
-        let currMin = Infinity;
-        let minIdx = 0;
-        test.forEach( (atm,idx) => {
-            let atmLAT = atm.poiAddressDetails.geoLocationDetails.latitude;
-            let atmLNG = atm.poiAddressDetails.geoLocationDetails.latitude;
+let rawData = [];
+let readStream = fs.createReadStream(path.join(__dirname, '../data/DC-atm.json'), 'utf8')
 
-            //use Haversine distance to find closest locations
-            if (haversineDistance([lat,lng], [atmLAT, atmLNG]) < currMin) {
-                currMin = haversineDistance([lat,lng], [atmLAT, atmLNG]); 
-                minIdx = idx;
-            }
+readStream.on('data', (chunk) => {
+    rawData.push(chunk)
+}).on('end', () => logger.info("ATM locations fetched"))
+// fs.readFile(path.join(__dirname, '../data/DC-atm.json'),  (err,data) => {
+//     if (err) logger.error(err);
+//     //  rawData.concat(...rawData,data)
+   
+//     console.log(rawData)
+// })
+
+console.log(rawData)
+// client.geocode({
+//     params:{
+//         address:str,
+//         key:process.env.GOOGLE_MAPS_API_KEY
+//     }
+// })
+//     .then(res => {
+//         let { lat, lng } = res.data.results[0].geometry.location;
+//         let currMin = Infinity;
+//         let minIdx = 0;
+//         test.forEach( (atm,idx) => {
+//             let atmLAT = atm.poiAddressDetails.geoLocationDetails.latitude;
+//             let atmLNG = atm.poiAddressDetails.geoLocationDetails.latitude;
+
+//             //use Haversine distance to find closest locations
+//             if (haversineDistance([lat,lng], [atmLAT, atmLNG]) < currMin) {
+//                 currMin = haversineDistance([lat,lng], [atmLAT, atmLNG]); 
+//                 minIdx = idx;
+//             }
                 
-        })
-        result.push([test[minIdx].poiName, test[minIdx].poiAddressDetails.address, test[minIdx].atmAttributes])
-        logger.info(result)
-    })
-    .catch(err => logger.error(err))
+//         })
+//         result.push([test[minIdx].poiName, test[minIdx].poiAddressDetails.address, test[minIdx].atmAttributes])
+//         logger.info(result)
+//     })
+//     .catch(err => logger.error(err))
 
 
     
