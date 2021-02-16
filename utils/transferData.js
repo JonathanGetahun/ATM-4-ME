@@ -39,22 +39,25 @@ module.exports = router;
 
 const insertValues = `INSERT INTO atms(name,type,address,postalCode,restricted,wheelchair,brail,fee,chip,deposit,lat,lng) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`;
 
-db.query(dropTable)
-    .then(() => db.query(create_atm_table))
-    .then(() => db.query(createIndLat))
-    .then(() => db.query(createIndLng))
-    .then(() => {
-        const query = data.map((d) => new Promise((resolve,reject) => {
-            const values = [d.poiName, d.poiType, d.poiAddressDetails.address, d.poiAddressDetails.postalCode, d.atmAttributes.restrictedAccess, d.atmAttributes.wheelchairAccess, d.atmAttributes.brailleEnabled, d.atmAttributes.noFee, d.atmAttributes.chip, d.atmAttributes.depositAccepting, d.poiAddressDetails.geoLocationDetails.latitude, d.poiAddressDetails.geoLocationDetails.longitude]
+/**
+ * USE THIS TO CREATE ATM TABLE
+ */
+// db.query(dropTable)
+//     .then(() => db.query(create_atm_table))
+//     .then(() => db.query(createIndLat))
+//     .then(() => db.query(createIndLng))
+//     .then(() => {
+//         const query = data.map((d) => new Promise((resolve,reject) => {
+//             const values = [d.poiName, d.poiType, d.poiAddressDetails.address, d.poiAddressDetails.postalCode, d.atmAttributes.restrictedAccess, d.atmAttributes.wheelchairAccess, d.atmAttributes.brailleEnabled, d.atmAttributes.noFee, d.atmAttributes.chip, d.atmAttributes.depositAccepting, d.poiAddressDetails.geoLocationDetails.latitude, d.poiAddressDetails.geoLocationDetails.longitude]
 
-            db.query(insertValues, values)
-                .then(() => resolve())
-                .catch(err => console.log(err))
-        }))
+//             db.query(insertValues, values)
+//                 .then(() => resolve())
+//                 .catch(err => console.log(err))
+//         }))
 
-        return Promise.all(query)  
-    }).then((res) => console.log(res))
-        .catch(err => console.log(err))
+//         return Promise.all(query)  
+//     }).then((res) => console.log(res))
+//         .catch(err => console.log(err))
 
 //test
 router.get('/', (req,res) => {
