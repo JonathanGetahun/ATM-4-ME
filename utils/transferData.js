@@ -48,7 +48,7 @@ const insertValues = `INSERT INTO atms(name,type,address,postalCode,restricted,w
 //     .then(() => db.query(createIndLng))
 //     .then(() => {
 //         const query = data.map((d) => new Promise((resolve,reject) => {
-//             const values = [d.poiName, d.poiType, d.poiAddressDetails.address, d.poiAddressDetails.postalCode, d.atmAttributes.restrictedAccess, d.atmAttributes.wheelchairAccess, d.atmAttributes.brailleEnabled, d.atmAttributes.noFee, d.atmAttributes.chip, d.atmAttributes.depositAccepting, d.poiAddressDetails.geoLocationDetails.latitude, d.poiAddressDetails.geoLocationDetails.longitude]
+//         const values = [d.poiName, d.poiType, d.poiAddressDetails.address, d.poiAddressDetails.postalCode, d.atmAttributes.restrictedAccess, d.atmAttributes.wheelchairAccess, d.atmAttributes.brailleEnabled, d.atmAttributes.noFee, d.atmAttributes.chip, d.atmAttributes.depositAccepting, d.poiAddressDetails.geoLocationDetails.latitude, d.poiAddressDetails.geoLocationDetails.longitude]
 
 //             db.query(insertValues, values)
 //                 .then(() => resolve())

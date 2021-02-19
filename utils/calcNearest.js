@@ -1,91 +1,77 @@
 require('dotenv').config();
 const logger = require('./logger')
-const fs = require('fs');
-const path = require('path');
 
 const { Client } = require('@googlemaps/google-maps-services-js');
-const { on } = require('process');
-
-
 const client = new Client({});
 
-const haversineDistance = ([lat1, lon1], [lat2, lon2], isMiles = true) => {
-    const toRadian = angle => (Math.PI / 180) * angle;
-    const distance = (a, b) => (Math.PI / 180) * (a - b);
-    const RADIUS_OF_EARTH_IN_KM = 6371;
+const db = require('../db');
+const { nearestATM } = require('../db/queries');
 
-    const dLat = distance(lat2, lat1);
-    const dLon = distance(lon2, lon1);
-
-    lat1 = toRadian(lat1);
-    lat2 = toRadian(lat2);
-
-    // Haversine Formula
-    const a =
-      Math.pow(Math.sin(dLat / 2), 2) +
-      Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
-    const c = 2 * Math.asin(Math.sqrt(a));
-
-    let finalDistance = RADIUS_OF_EARTH_IN_KM * c;
-
-    if (isMiles) {
-      finalDistance /= 1.60934;
-    }
-
-    return finalDistance;
-  };
-
-
-test2 = [];
-
-
-let str = "1135 16th St NW"
-let city = "Washington, DC"
+let str = "1150 Maine Ave SW";
+let city = "Washington, DC";
 str += city;
+
+let str2 = "16th St. NW & K St. NW";
+let city2 = "Washington, DC";
+str2 += city2;
+
 /**
- * Test
+ * New col that has haversine dist, return the top 3 after ordering
  */
-//Will convert string street adress to lat & long to compare w/ database atm's
-let result = [];
-let rawData = [];
-let readStream = fs.createReadStream(path.join(__dirname, '../data/DC-atm.json'), 'utf8')
-
-readStream.on('data', (chunk) => {
-    rawData.push(chunk)
-}).on('end', () => logger.info("ATM locations fetched"))
-// fs.readFile(path.join(__dirname, '../data/DC-atm.json'),  (err,data) => {
-//     if (err) logger.error(err);
-//     //  rawData.concat(...rawData,data)
-   
-//     console.log(rawData)
-// })
-
-console.log(rawData)
-// client.geocode({
-//     params:{
-//         address:str,
-//         key:process.env.GOOGLE_MAPS_API_KEY
-//     }
-// })
-//     .then(res => {
-//         let { lat, lng } = res.data.results[0].geometry.location;
-//         let currMin = Infinity;
-//         let minIdx = 0;
-//         test.forEach( (atm,idx) => {
-//             let atmLAT = atm.poiAddressDetails.geoLocationDetails.latitude;
-//             let atmLNG = atm.poiAddressDetails.geoLocationDetails.latitude;
-
-//             //use Haversine distance to find closest locations
-//             if (haversineDistance([lat,lng], [atmLAT, atmLNG]) < currMin) {
-//                 currMin = haversineDistance([lat,lng], [atmLAT, atmLNG]); 
-//                 minIdx = idx;
-//             }
-                
-//         })
-//         result.push([test[minIdx].poiName, test[minIdx].poiAddressDetails.address, test[minIdx].atmAttributes])
-//         logger.info(result)
-//     })
-//     .catch(err => logger.error(err))
 
 
+function getNearest(userAddress) {
+
+    return client.geocode({
+        params:{
+            address:userAddress,
+            key:process.env.GOOGLE_MAPS_API_KEY
+        }
+    })
+        .then(resolved => {
+            //get lat and lng from user input
+            var latitude = resolved.data.results[0].geometry.location.lat;
+            var longitude = resolved.data.results[0].geometry.location.lng;
+            return [latitude, longitude]
+        }).then((response) => {
+            //query db to get shortest distance addresses 
+            return db.query(nearestATM, [response[0],response[1],3])
+                .then((res) => {
     
+                    const newDist = res.rows.map(atm => new Promise((resolve,reject) => {
+    
+                        client.distancematrix({
+                            params:{
+                                origins:[{lat:response[0],lng:response[1]}],
+                                destinations: [{lat:atm.lat,lng:atm.lng}],
+                                key:process.env.GOOGLE_MAPS_API_KEY,
+                            }
+                        }).then((res) => {
+                            //gets distance text from distancematrix api result array
+                            resolve({...atm, text:res.data.rows[0].elements[0].distance.text})
+                        }).catch(err => reject(err))
+                    }))
+                        return Promise.all(newDist);
+                    
+                }).then(res => {
+                    return res
+                }).catch(err => logger.error(err))
+    
+        }).then(res => {
+            return res
+        }).catch(err => logger.error(err))
+
+}
+// (async() => {
+//     try{
+//         const ad = await getNearest(str);
+//         console.log(ad)
+//     } catch {
+//         logger.error("works no")
+//     }
+// })();
+
+
+module.exports = getNearest;
+
+

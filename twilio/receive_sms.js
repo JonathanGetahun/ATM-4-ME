@@ -4,10 +4,15 @@ const MessagingResponse = require('twilio').twiml.MessagingResponse;
 // twilio-cli 
 // twilio phone-numbers:update "+14066928690" --sms-url="http://localhost:4000/sms"
 
-router.post('/', function(req, res) {
-    console.log(req);
+const getNearest = require('../utils/calcNearest');
+
+router.post('/', async function(req, res) {
+    const { Body } = req.body;
+    console.log(Body);
+    const atms = await getNearest(Body)
+
     const twiml = new MessagingResponse();
-    twiml.message('The Robots are coming! Head for the hills!');
+    await twiml.message(`${atms}`);
     res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(twiml.toString());
   });
