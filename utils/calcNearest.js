@@ -30,6 +30,7 @@ function getNearest(userAddress) {
     })
         .then(resolved => {
             //get lat and lng from user input
+            console.log(resolved.data, "orrrrrrrr\nthis\nnot necessary\n", resolved.data.results)
             var latitude = resolved.data.results[0].geometry.location.lat;
             var longitude = resolved.data.results[0].geometry.location.lng;
             return [latitude, longitude]
