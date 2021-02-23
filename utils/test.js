@@ -91,14 +91,46 @@ const test = [
 
 // console.log(d)
 
-client.distancematrix({
-    params:{
-        origins:[{lat: 38.8809629, lng: -77.0283309}],
-        destinations:[{lat: 38.932384, lng: -77.024146}],
-        key:process.env.GOOGLE_MAPS_API_KEY,
-    }
-}).then((res) => {
-    //gets distance text from distancematrix api result array
-    console.log(res.data.rows[0].elements)
-}).catch(err => console.log(err))
+// client.distancematrix({
+//     params:{
+//         origins:[{lat: 38.8809629, lng: -77.0283309}],
+//         destinations:[{lat: 38.932384, lng: -77.024146}],
+//         key:process.env.GOOGLE_MAPS_API_KEY,
+//     }
+// }).then((res) => {
+//     //gets distance text from distancematrix api result array
+//     console.log(res.data.rows[0].elements)
+// }).catch(err => console.log(err))
 
+
+
+async function getNearest(userAddress) {
+
+    const trial = await client.geocode({
+        params:{
+            address:userAddress,
+            key:process.env.GOOGLE_MAPS_API_KEY
+        }
+    })
+
+            // console.log(resolved.data,"NOT RECEIVING DATA HERE", resolved.data.results)
+            var latitude = trial.data.results[0].geometry.location.lat;
+            var longitude = trial.data.results[0].geometry.location.lng;
+            return [latitude, longitude]
+
+
+  }
+
+// (async() => {
+//     try{
+//         const ad = await getNearest('1150 Maine Ave SW, Washington, DC');
+//         let final = '';
+//         // ad.forEach(atmString => {
+//         //   final += `${atmString}\n`
+//         // })
+//         console.log(ad)
+//     } catch(e) {
+//         logger.error(e)
+//     }
+// })();
+module.exports = getNearest

@@ -58,17 +58,6 @@ router.post('/',  async function(req, res) {
       res.writeHead(200, {'Content-Type': 'text/xml'});
       res.end(twiml.toString());
     }
-    // createResponse(Body.toLowerCase)
-    //   .then((res) => {
-    //     let finalATM = "Here are the 3 closest atms!\n\n"
-    //     res.forEach(atmString => {
-    //         finalATM += `${atmString}\n`
-    //     })
-
-
-
-    //   }).catch(e => logger.error(e));
-
   );
 
 
