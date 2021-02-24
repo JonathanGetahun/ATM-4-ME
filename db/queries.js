@@ -25,7 +25,16 @@ const create_atm_table = `CREATE TABLE atms (
     lng REAL
     )`;
 
+const insertValues = `INSERT INTO atms(name,type,address,postalCode,restricted,wheelchair,brail,fee,chip,deposit,lat,lng) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`;
+
+const insertFeedback = `INSERT INTO feedback(
+    email,
+    feedback
+) VALUES($1,$2)`
+
 module.exports = {
     nearestATM, 
-    create_atm_table
+    create_atm_table, 
+    insertValues,
+    insertFeedback
 }

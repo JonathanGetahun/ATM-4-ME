@@ -1,20 +1,13 @@
-import React, {useState} from 'react'
+import React, {useState} from 'react';
+import Home from './Home';
+import Footer from './Footer';
 
 const App = () => {
-  const [counter, setCounter] = useState(0);
-  const [values, setValues] = useState([]);
-
-  const handleClick = () => {
-      setCounter(counter + 1)
-      setValues(values.concat(counter))
-  }
 
   return (
     <div className="container">
-      hello  {counter} clicks
-      <button onClick={handleClick}>
-      </button>
-      <h1>ATM-4-ME</h1>
+      <Home />
+      <Footer />
     </div>
   )
 }

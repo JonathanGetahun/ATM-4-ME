@@ -39,6 +39,13 @@ module.exports = router;
 
 const insertValues = `INSERT INTO atms(name,type,address,postalCode,restricted,wheelchair,brail,fee,chip,deposit,lat,lng) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`;
 
+const createFeedback = `CREATE TABLE feedback (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR NOT NULL,
+    feedback VARCHAR
+)`
+
+
 /**
  * USE THIS TO CREATE ATM TABLE
  */
@@ -61,8 +68,7 @@ const insertValues = `INSERT INTO atms(name,type,address,postalCode,restricted,w
 
 //test
 router.get('/', (req,res) => {
-    db.query(`SELECT * FROM atms WHERE id < 10`)
-    .then((val) => console.log(val))
+    db.query(createFeedback).then(() => console.log("created feedback"))
     .catch(err => console.log(err))
 })
 
