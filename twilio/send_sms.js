@@ -3,11 +3,26 @@ const Router = require('express-promise-router');
 const router = new Router();
 const logger = require('../utils/logger');
 
-const accountSid = process.env.NODE_ENV === 'production' ? process.env.TWILIO_ACCOUNT_SID : process.env.TWILIO_TEST_SID;
-const authToken = process.env.NODE_ENV === 'production' ? process.env.TWILIO_AUTH_TOKEN : process.env.TWILIO_TEST_TOKEN;
+// const accountSid = process.env.NODE_ENV === 'production' ? process.env.TWILIO_ACCOUNT_SID : process.env.TWILIO_TEST_SID;
+// const authToken = process.env.NODE_ENV === 'production' ? process.env.TWILIO_AUTH_TOKEN : process.env.TWILIO_TEST_TOKEN;
+
+const accountSid =  process.env.TWILIO_ACCOUNT_SID 
+const authToken =  process.env.TWILIO_AUTH_TOKEN 
 const client = require('twilio')(accountSid, authToken);
 
 const getNearest = require('../utils/calcNearest');
+
+const { addUser, deleteUser, checkUser } = require('../db/queries');
+const db = require('../db');
+
+const helpText = `
+    Welcome to ATM-4-ME!
+    
+    Please enter an address followed by city and state
+    like this (123 Main St. Washington, D.C.) or an intersection
+    (123 Nort St. & 456 West St.  Washington, D.C.). Current available
+    ATMs are limited to Washington, D.C. but we are beginning to expand!
+    `
 
 
 const createResponse = async (body) => {
@@ -39,19 +54,42 @@ const createResponse = async (body) => {
 router.post('/', (req) => {
   const { Body,From } = req.body;
 
-   createResponse(Body.toLowerCase().trim).then((res) => {
-    let finalATM = "Here are the 3 closest atms!\n\n"
-    res.forEach(atmString => {
-    finalATM += `${atmString}\n`})
+  db.query(checkUser,[From])
+    .then((user) => {
+      if(user.rows.length === 0){
+        db.query(addUser,[From])
+          .then(() => {
+            return client.messages
+            .create({
+              body: `${helpText}`,
+              from: '+14066928690',
+              to: From
+            })
+            .then(message => logger.info("user added"))
+          })
+      } else {
+        db.query(deleteUser,[From])
+        .then(() => {
+          
+          createResponse(Body.toLowerCase()).then((res) => {
+            let finalATM = "Here are the 3 closest atms!\n\n"
+            res.forEach(atmString => {
+            finalATM += `${atmString}\n`})
+        
+            return client.messages
+            .create({
+               body: `${finalATM}`,
+               from: '+14066928690',
+               to: From
+             })
+            .then(message => logger.info("message received"));         
+          }).catch(err => logger.error(err))
+        })
+      }
+    })
+  
 
-    return client.messages
-    .create({
-       body: `${finalATM}`,
-       from: '+14066928690',
-       to: From
-     })
-    .then(message => console.log(message.sid));         
-}).catch(err => logger.error(err))
+
 
 })
 

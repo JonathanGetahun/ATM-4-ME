@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import logo from './images/atm4.png';
 import feedbackAPI from './apis/feedbackAPI';
+import { Link } from 'react-router-dom';
 
 
 function Home() {
@@ -9,6 +10,8 @@ function Home() {
 
     const [emailErr, setEmailErr] = useState({});
     const [messageErr, setMessageErr] = useState({});
+
+    const [submitted, setSubmitted] = useState(false);
 
     const handleEmail = (e) => {
         setEmail(e.target.value)
@@ -28,7 +31,9 @@ function Home() {
 
                 setEmail("");
                 setMessage("");
+                setSubmitted(true)
             }catch(err) {
+                setSubmitted(false);
                 console.log(err)
             }
         }
@@ -44,12 +49,11 @@ function Home() {
         let regexMatch = validEmailRegex.test(email);
 
         if(!regexMatch) {
-            emailErr.isNotValid = "Please Enter a Valid Email.";
+            emailErr.isNotValid = "Please enter a valid email address.";
             isValid = false;
         };
 
         if(message.length < 1){
-            console.log("reached")
             messageErr.tooShort = "Please enter a message.";
             isValid = false;
         };
@@ -70,7 +74,7 @@ function Home() {
           and we will send you the nearest ATMs where you can get the cash you need.
       </p>
 
-      <p><a>If you would like to submit an atm location, please do so here</a>.</p>
+      <p><Link to="/submit">If you would like to submit an atm location, please do so here</Link>.</p>
 
       <p>This information was scraped from <a href="https://network.americanexpress.com/globalnetwork/atm_locator/en/#search">American Express</a>.</p>
 
@@ -90,11 +94,12 @@ function Home() {
           <label>
               <b>Message:</b>
           </label><br />
-          <textarea value={message} onChange={(e) => handleMessage(e)} placeholder="Please leave questions or comments here" />
+          <textarea value={message} onChange={(e) => handleMessage(e)} placeholder="Please leave questions or comments here..." />
           {Object.keys(messageErr).map((key,idx) => {
                   return <div key={idx} style={{color: "black"}}>{messageErr[key]}</div>
               })}
           <br />
+          {submitted && <div style={{color:"black"}}>{"Submitted Successfully!"}</div>}
           <input className="form-submit-button" type="submit" value="Submit" />
 
       </form>

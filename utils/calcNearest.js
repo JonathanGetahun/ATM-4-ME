@@ -30,7 +30,6 @@ function getNearest(userAddress) {
     })
         .then(resolved => {
             //get lat and lng from user input
-            console.log(resolved.data,"NOT RECEIVING DATA HERE", resolved.data.results)
             var latitude = resolved.data.results[0].geometry.location.lat;
             var longitude = resolved.data.results[0].geometry.location.lng;
             return [latitude, longitude]
@@ -63,14 +62,6 @@ function getNearest(userAddress) {
         }).catch(err => logger.error(err))
 
 }
-// (async() => {
-//     try{
-//         const ad = await getNearest(str);
-//         console.log(ad)
-//     } catch {
-//         logger.error("works no")
-//     }
-// })();
 
 
 module.exports = getNearest;

@@ -169,6 +169,24 @@ textarea {
 	display: relative;
   }
 
+.submitATMform {
+	background-color: blanchedalmond;
+	margin-left:10px;
+	/* margin-left: auto;
+	margin-right:auto;
+	width: 70%;
+	height: 70%; */
+}
+
+.submitInput {
+	outline:none;
+	width: 100%;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	border-top: none;
+	border-bottom: 1px solid #DDD;
+	box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
+}
 
 /*		Default Layout: 992px. 
 		Gutters: 24px.

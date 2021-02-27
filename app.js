@@ -11,11 +11,15 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"))
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, '/client/build')));
 
 mountRoutes(app);
 
-app.get('/', (req,res) => {
-    res.send("Hello")
+// app.use(express.static(__dirname));
+
+// send the user to index html page despite the url
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'index.html'));
 });
 
 const port = process.env.PORT || 4000;
