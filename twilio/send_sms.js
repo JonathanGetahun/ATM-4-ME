@@ -22,6 +22,8 @@ const helpText = `
     like this (123 Main St. Washington, D.C.) or an intersection
     (123 Nort St. & 456 West St.  Washington, D.C.). Current available
     ATMs are limited to Washington, D.C. but we are beginning to expand!
+
+    https://atm-4-me.herokuapp.com/
     `
 
 
