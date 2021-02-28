@@ -15,7 +15,6 @@ app.use(express.static(path.join(__dirname, '/client/build')));
 
 mountRoutes(app);
 
-// app.use(express.static(__dirname));
 
 // send the user to index html page despite the url
 app.get('*', (req, res) => {

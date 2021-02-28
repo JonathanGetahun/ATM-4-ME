@@ -7,14 +7,6 @@ const client = new Client({});
 const db = require('../db');
 const { nearestATM } = require('../db/queries');
 
-let str = "1150 Maine Ave SW";
-let city = "Washington, DC";
-str += city;
-
-let str2 = "16th St. NW & K St. NW";
-let city2 = "Washington, DC";
-str2 += city2;
-
 /**
  * New col that has haversine dist, return the top 3 after ordering
  */
