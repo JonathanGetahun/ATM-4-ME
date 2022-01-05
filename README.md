@@ -1,4 +1,4 @@
-# ATM-4-ME
+# ATM-4-ME [deprecated]
 
 ![ATM-4-ME logo](client/src/images/atm4.png)
 
